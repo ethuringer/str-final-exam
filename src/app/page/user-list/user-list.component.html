@@ -1,19 +1,35 @@
 <div class="row">
+  <div class="input-group col-4 offset-8 mt-3 mb-3">
+    <input (keyup)="onChangeFilter($event)" type="text" class="form-control" placeholder="Search for a user...">
+    <div class="input-group-append">
+    <button class="btn btn-info" type="submit"><i class="fa fa-search"></i></button>
+</div>
+  </div>
+</div>
+
+<div class="row">
+  <button class="btn btn-primary btn-block my-4" [routerLink]="['user/' + 0]" [disabled]="actionEvent">
+    <i class="fa fa-edit"></i>
+    Add new User
+</button>
+</div>
+
+<div class="row">
   <div class="col-12 mt-2">
     <h2>User List</h2>
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Address</th>
-          <th>Active</th>
+          <th (click)="onColumnSelect('id')">#</th>
+          <th (click)="onColumnSelect('name')">Name</th>
+          <th (click)="onColumnSelect('email')">Email</th>
+          <th (click)="onColumnSelect('address')">Address</th>
+          <th (click)="onColumnSelect('active')">Active</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of users$ | async">
+        <tr *ngFor="let user of users$ | async | filter:filterStr | sorter:columnKey">
           <td>{{ user.id }}</td>
           <td>{{ user.name }}</td>
           <td>{{ user.email }}</td>
@@ -21,12 +37,16 @@
           <td>{{ user.active }}</td>
           <td>
             <div class="btn-group">
-              <button [routerLink]="['user/' + user.id]" class="btn btn-info">
+              <button [routerLink]="['user/' + user.id]" class="btn btn-info" [disabled]="actionEvent">
                 <i class="fa fa-pencil"></i>
               </button>
-              <button class="btn btn-danger">
-                <i class="fa fa-trash"></i>
-              </button>
+              <button *ngIf="!actionEvent" class="btn btn-danger" (click)="onConfirmDelete(user.id)"
+                  [disabled]="actionEvent">
+                  <i class="fa fa-trash"></i>
+                </button>
+                <button *ngIf="actionEvent" class="btn btn-danger" [disabled]="actionEvent">
+                  <i class="fa fa-trash" [ngClass]="{'trash-fade': user.id === clickedElementID }"></i>
+                </button>
             </div>
           </td>
         </tr>
@@ -34,3 +54,4 @@
     </table>
   </div>
 </div>
+<app-confirm-dialog></app-confirm-dialog>

@@ -1,0 +1,11 @@
+.error-message {
+    font-style: italic;
+    font-size: 0.8em;
+    color: #9b0404;
+    transition: all ease-in .4s;
+  }
+
+.btn-block:disabled {
+    box-shadow: none;
+    cursor: not-allowed;
+  }
